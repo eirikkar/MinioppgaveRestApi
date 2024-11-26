@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Data;
+using TaskManager.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,5 +16,15 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapGet("/", () => "Hello World!");
+app.MapPost(
+    "api/tasks",
+    async (AppDbContext db, Tasks task) =>
+    {
+        task.Id = Guid.NewGuid();
+        await db.Tasks.AddAsync(task);
+        await db.SaveChangesAsync();
+        return Results.Created($"/tasks/{task.Id}", task);
+    }
+);
 
 app.Run();
