@@ -15,7 +15,7 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/health", () => "Healthy!");
 app.MapPost(
     "api/tasks",
     async (AppDbContext db, Tasks task) =>
