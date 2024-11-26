@@ -31,6 +31,10 @@ app.MapGet(
     async (AppDbContext db) =>
     {
         var tasks = await db.Tasks.ToListAsync();
+        if (tasks == null)
+        {
+            return Results.NotFound();
+        }
         return Results.Ok(tasks);
     }
 );
