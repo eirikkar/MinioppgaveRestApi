@@ -26,5 +26,25 @@ app.MapPost(
         return Results.Created($"/tasks/{task.Id}", task);
     }
 );
+app.MapGet(
+    "api/tasks",
+    async (AppDbContext db) =>
+    {
+        var tasks = await db.Tasks.ToListAsync();
+        return Results.Ok(tasks);
+    }
+);
+app.MapGet(
+    "api/tasks/{id}",
+    async (AppDbContext db, Guid id) =>
+    {
+        var task = await db.Tasks.FindAsync(id);
+        if (task == null)
+        {
+            return Results.NotFound();
+        }
+        return Results.Ok(task);
+    }
+);
 
 app.Run();
