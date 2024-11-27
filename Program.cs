@@ -69,5 +69,19 @@ app.MapPut(
         return Results.Ok(currentTask);
     }
 );
+app.MapDelete(
+    "api/tasks/{id}",
+    async (AppDbContext db, Guid id) =>
+    {
+        var task = await db.Tasks.FindAsync(id);
+        if (task == null)
+        {
+            return Results.NotFound();
+        }
+        db.Tasks.Remove(task);
+        await db.SaveChangesAsync();
+        return Results.Ok($"Task with id: {id} deleted successfully");
+    }
+);
 
 app.Run();
