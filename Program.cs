@@ -16,6 +16,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.MapGet("/health", () => "Healthy!");
+
 app.MapPost(
     "api/tasks",
     async (AppDbContext db, Tasks task) =>
@@ -48,6 +49,24 @@ app.MapGet(
             return Results.NotFound();
         }
         return Results.Ok(task);
+    }
+);
+
+app.MapPut(
+    "api/tasks/{id}",
+    async (AppDbContext db, Guid id, Tasks task) =>
+    {
+        var currentTask = await db.Tasks.FindAsync(id);
+        if (currentTask == null)
+        {
+            return Results.NotFound();
+        }
+        currentTask.Title = task.Title;
+        currentTask.Description = task.Description;
+        currentTask.IsCompleted = task.IsCompleted;
+        currentTask.Duedate = task.Duedate;
+        await db.SaveChangesAsync();
+        return Results.Ok(currentTask);
     }
 );
 
