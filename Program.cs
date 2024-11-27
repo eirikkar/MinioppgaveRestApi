@@ -4,19 +4,23 @@ using TaskManager.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// AppdbContext and Sqlite connection
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=Database/database.db")
 );
 var app = builder.Build();
 
+// Create the database and run the migrations if it doesn't exist
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 }
 
+//Health endpoint to test the connection
 app.MapGet("/health", () => "Healthy!");
 
+// Post, Get, Put and Delete endpoints
 app.MapPost(
     "api/tasks",
     async (AppDbContext db, Tasks task) =>
@@ -27,6 +31,7 @@ app.MapPost(
         return Results.Created($"/tasks/{task.Id}", task);
     }
 );
+
 app.MapGet(
     "api/tasks",
     async (AppDbContext db) =>

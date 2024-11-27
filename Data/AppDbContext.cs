@@ -10,6 +10,7 @@ public class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options) { }
 
+    // This method is used to configure the database
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -19,7 +20,6 @@ public class AppDbContext : DbContext
             entity.ToTable("Tasks");
 
             entity.HasKey(task => task.Id);
-
             entity.Property(t => t.Title).IsRequired();
             entity.Property(t => t.Description).IsRequired();
             entity.Property(t => t.IsCompleted).IsRequired();
